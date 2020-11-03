@@ -2,8 +2,9 @@ package restful
 
 import (
 	"context"
-	"github.com/emicklei/go-restful"
 	"net/http"
+
+	"github.com/emicklei/go-restful"
 )
 
 //Context is a struct which has both request and response objects
@@ -57,7 +58,10 @@ func (bs *Context) WriteHeaderAndJSON(status int, value interface{}, contentType
 
 //ReadEntity is request reader
 func (bs *Context) ReadEntity(schema interface{}) (err error) {
-	return bs.Req.ReadEntity(schema)
+	if err = bs.Req.ReadEntity(schema); err != nil {
+		return err
+	}
+	return bs.ReadQueryEntity(schema)
 }
 
 //ReadHeader is used to read header of request
@@ -87,7 +91,14 @@ func (bs *Context) ReadQueryParameter(name string) string {
 //     Password string `form:"password"`
 // }
 func (bs *Context) ReadQueryEntity(schema interface{}) (err error) {
-	return mapForm(schema, bs.Req.Request.URL.Query())
+	if err = mapForm(schema, bs.Req.Request.URL.Query()); err != nil {
+		return err
+	}
+	var pathParameters = make(map[string][]string)
+	for key, value := range bs.ReadPathParameters() {
+		pathParameters[key] = append(pathParameters[key], value)
+	}
+	return mapForm(schema, pathParameters)
 }
 
 //ReadBodyParameter used to read body parameter of a request
