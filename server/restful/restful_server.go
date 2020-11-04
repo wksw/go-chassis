@@ -4,7 +4,6 @@ import (
 	"context"
 	"errors"
 	"fmt"
-	"github.com/go-chassis/go-chassis/v2/server/restful/api"
 	"net"
 	"net/http"
 	"os"
@@ -14,6 +13,7 @@ import (
 	"sync"
 
 	"github.com/emicklei/go-restful"
+
 	"github.com/go-chassis/go-archaius"
 	"github.com/go-chassis/go-chassis/v2/core/common"
 	globalconfig "github.com/go-chassis/go-chassis/v2/core/config"
@@ -24,6 +24,7 @@ import (
 	"github.com/go-chassis/go-chassis/v2/pkg/profile"
 	"github.com/go-chassis/go-chassis/v2/pkg/runtime"
 	"github.com/go-chassis/go-chassis/v2/pkg/util/iputil"
+	"github.com/go-chassis/go-chassis/v2/server/restful/api"
 	swagger "github.com/go-chassis/go-restful-swagger20"
 	"github.com/go-chassis/openlog"
 )
@@ -297,7 +298,7 @@ func (r *restfulServer) CreateLocalSchema(opts server.Options) error {
 		SwaggerFilePath: "./swagger-ui/dist/",
 	}
 	if globalconfig.GlobalDefinition.ServiceComb.NoRefreshSchema {
-		openlog.Info("will not create schema file. if you want to change it, please update chassis.yaml->NoRefreshSchema=true")
+		openlog.Info("will not create schema file. if you want to change it, please update chassis.yaml->noRefreshSchema=true")
 	} else {
 		if err := os.RemoveAll(path); err != nil {
 			openlog.Error(err.Error())
