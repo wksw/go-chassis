@@ -27,6 +27,7 @@ require (
 replace (
 	github.com/go-chassis/openlog => ../openlog
 	github.com/go-chassis/seclog => ../seclog
+	github.com/go-chassis/go-archaius => ../go-archaius
 )
 
 go 1.13

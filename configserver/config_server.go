@@ -4,13 +4,14 @@ import (
 	"crypto/tls"
 	"errors"
 	"fmt"
+	"net/url"
+	"strings"
+
 	"github.com/go-chassis/go-archaius/source/remote"
 	"github.com/go-chassis/go-chassis/v2/core/common"
 	"github.com/go-chassis/go-chassis/v2/core/config"
 	"github.com/go-chassis/go-chassis/v2/core/endpoint"
 	chassisTLS "github.com/go-chassis/go-chassis/v2/core/tls"
-	"net/url"
-	"strings"
 
 	"github.com/go-chassis/go-archaius"
 	"github.com/go-chassis/go-chassis/v2/core/registry"
@@ -124,21 +125,25 @@ func initConfigServer(endpoint string, enableSSL bool, tlsConfig *tls.Config, in
 
 	remoteSourceType := archaius.GetString("servicecomb.config.client.type", archaius.KieSource)
 
+	dimension := map[string]string{
+		remote.LabelApp:         runtime.App,
+		remote.LabelService:     runtime.ServiceName,
+		remote.LabelEnvironment: runtime.Environment,
+	}
+	for key, value := range config.GetConfigServerConf().Dimension {
+		dimension[key] = value
+	}
 	var ri = &archaius.RemoteInfo{
-		DefaultDimension: map[string]string{
-			remote.LabelApp:         runtime.App,
-			remote.LabelService:     runtime.ServiceName,
-			remote.LabelVersion:     runtime.Version,
-			remote.LabelEnvironment: runtime.Environment,
-		},
-		URL:             endpoint,
-		EnableSSL:       enableSSL,
-		TLSConfig:       tlsConfig,
-		RefreshMode:     refreshMode,
-		RefreshInterval: interval,
-		AutoDiscovery:   config.GetConfigServerConf().AutoDiscovery,
-		APIVersion:      config.GetConfigServerConf().APIVersion.Version,
-		RefreshPort:     config.GetConfigServerConf().RefreshPort,
+		DefaultDimension: dimension,
+		TenantName:       runtime.App,
+		URL:              endpoint,
+		EnableSSL:        enableSSL,
+		TLSConfig:        tlsConfig,
+		RefreshMode:      refreshMode,
+		RefreshInterval:  interval,
+		AutoDiscovery:    config.GetConfigServerConf().AutoDiscovery,
+		APIVersion:       config.GetConfigServerConf().APIVersion.Version,
+		RefreshPort:      config.GetConfigServerConf().RefreshPort,
 	}
 
 	err := archaius.EnableRemoteSource(remoteSourceType, ri)
