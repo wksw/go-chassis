@@ -25,9 +25,9 @@ require (
 	k8s.io/kube-openapi v0.0.0-20191107075043-30be4d16710a
 )
 replace (
-	github.com/go-chassis/openlog => ../openlog
-	github.com/go-chassis/seclog => ../seclog
-	github.com/go-chassis/go-archaius => ../go-archaius
+	// github.com/go-chassis/openlog => ../openlog
+	// github.com/go-chassis/seclog => ../seclog
+	// github.com/go-chassis/go-archaius => ../go-archaius
 )
 
 go 1.13
