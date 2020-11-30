@@ -2,16 +2,17 @@ package servicecenter
 
 import (
 	"fmt"
-	scregistry "github.com/apache/servicecomb-service-center/pkg/registry"
 	"net/url"
 	"time"
+
+	scregistry "github.com/apache/servicecomb-service-center/pkg/registry"
+	client "github.com/wksw/go-chassis/pkg/scclient"
 
 	"github.com/go-chassis/go-archaius"
 	"github.com/go-chassis/go-chassis/v2/core/common"
 	"github.com/go-chassis/go-chassis/v2/core/config"
 	"github.com/go-chassis/go-chassis/v2/core/registry"
 	"github.com/go-chassis/go-chassis/v2/pkg/runtime"
-	"github.com/go-chassis/go-chassis/v2/pkg/scclient"
 
 	"github.com/go-chassis/openlog"
 	"k8s.io/apimachinery/pkg/util/sets"
@@ -226,6 +227,7 @@ func (c *CacheManager) pullMicroServiceInstance() error {
 		}
 	}
 	instances := RegroupInstances(services, response)
+	openlog.Debug(fmt.Sprintf("pull microservice '%v'", instances))
 	filter(instances)
 
 	return nil
